@@ -120,4 +120,19 @@ public class ReservationController {
     ) {
         return ResponseEntity.ok(reservationAvailabilityUseCase.getAvailableSlots(venueId, fieldId, date));
     }
+
+    @Operation(
+            summary = "Contar reservas activas por complejo y fecha",
+            description = "Devuelve el numero de reservas activas asociadas a un complejo en una fecha especifica.",
+            parameters = {
+                    @Parameter(name = "venueId", description = "ID del complejo para el que se desea contar las reservas",
+                            required = true, example = "1")
+            }
+    )
+    @GetMapping("/venue/{venueId}/date/count")
+    public ResponseEntity<Long> countReservationsByVenueIdAndDate(
+            @PathVariable Long venueId,
+            @RequestParam(value = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return ResponseEntity.ok(reservationUseCase.countActiveByVenueIdAndDate(venueId, date));
+    }
 }

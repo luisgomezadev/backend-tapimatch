@@ -12,9 +12,7 @@ public interface VenueUseCase {
     VenueDTO save(VenueRequest request);
     VenueDTO update(Long id, VenueRequest request);
     VenueDTO findById(Long id);
-    VenueDTO findByIdForCurrentUser(Long id);
     VenueDTO findByCode(String code);
     Optional<VenueDTO> findByAdminId();
-    void deleteById(Long id);
     PageResponse<VenueDTO> searchVenues(VenueFilter filter, Pageable pageable);
 }

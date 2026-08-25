@@ -11,4 +11,6 @@ public interface UserUseCase {
     UserDTO save(UserRequest userRequest);
 
     Optional<UserDTO> findByEmail(String email);
+
+    Optional<UserDTO> findCurrentUser();
 }

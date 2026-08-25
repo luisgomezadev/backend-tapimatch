@@ -59,4 +59,10 @@ public class ReservationJpaAdapter implements ReservationRepositoryPort {
         return reservationRepository.findByField_Venue_IdAndStatusAndReservationDateOrderByStartTimeAsc(venueId, ReservationStatus.ACTIVE, date)
                 .stream().map(mapper::toModel).toList();
     }
+
+    @Override
+    public long countActiveByVenueIdAndDate(Long venueId, LocalDate date) {
+        return reservationRepository.countByField_Venue_IdAndStatusAndReservationDate(
+                venueId, ReservationStatus.ACTIVE, date);
+    }
 }

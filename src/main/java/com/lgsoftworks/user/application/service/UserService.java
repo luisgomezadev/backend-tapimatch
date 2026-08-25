@@ -1,5 +1,6 @@
 package com.lgsoftworks.user.application.service;
 
+import com.lgsoftworks.auth.application.service.CurrentUserService;
 import com.lgsoftworks.user.application.dto.mapper.UserModelMapper;
 import com.lgsoftworks.user.application.dto.request.UserRequest;
 import com.lgsoftworks.user.application.dto.response.UserDTO;
@@ -23,7 +24,7 @@ public class UserService implements UserUseCase, UploadUserImageUseCase {
     private final UserRepositoryPort userRepositoryPort;
     private final ImageUploaderPort imageUploader;
     private final UserUniquenessValidator uniquenessValidator;
-    private final PasswordEncoder passwordEncoder;
+    private final CurrentUserService currentUserService;
     private final UserModelMapper userModelMapper;
 
     @Override
@@ -50,6 +51,12 @@ public class UserService implements UserUseCase, UploadUserImageUseCase {
     public Optional<UserDTO> findByEmail(String email) {
         Optional<User> user = userRepositoryPort.findByEmail(email);
         return user.map(userModelMapper::toUserDTO);
+    }
+
+    @Override
+    public Optional<UserDTO> findCurrentUser() {
+        User currentUser = currentUserService.getCurrentUser();
+        return findById(currentUser.getId());
     }
 
     @Override

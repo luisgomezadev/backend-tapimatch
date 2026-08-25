@@ -25,19 +25,14 @@ public class UserController {
     private final UserUseCase userUseCase;
     private final UploadUserImageUseCase uploadUserImageUseCase;
 
-    @Operation(summary = "Obtener un jugador por su ID")
+    @Operation(summary = "Obtener la información del usuario autenticado actualmente")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Jugador encontrado"),
-            @ApiResponse(responseCode = "404", description = "Jugador no encontrado")
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<UserDTO>> getPlayerById(@PathVariable Long id) {
-        return ResponseEntity.ok(userUseCase.findById(id));
-    }
-
-    @GetMapping("/by-email")
-    public ResponseEntity<Optional<UserDTO>> getUserByEmail(@RequestParam String email) {
-        return ResponseEntity.ok(userUseCase.findByEmail(email));
+    @GetMapping("/me")
+    public ResponseEntity<Optional<UserDTO>> getCurrentUser() {
+        return ResponseEntity.ok(userUseCase.findCurrentUser());
     }
 
     @PostMapping("/{id}/upload-image")

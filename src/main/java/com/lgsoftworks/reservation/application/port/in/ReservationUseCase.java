@@ -13,4 +13,5 @@ public interface ReservationUseCase {
     List<ReservationDTO> findByVenueId(Long venueId);
     List<ReservationDTO> findByVenueIdAndDate(Long venueId, LocalDate date);
     ReservationDTO cancel(Long id);
+    long countActiveByVenueIdAndDate(Long venueId, LocalDate date);
 }

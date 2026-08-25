@@ -95,4 +95,9 @@ public class ReservationService implements ReservationUseCase {
         Reservation saved = reservationRepositoryPort.save(reservation);
         return reservationModelMapper.toDTO(saved);
     }
+
+    @Override
+    public long countActiveByVenueIdAndDate(Long venueId, LocalDate date) {
+        return reservationRepositoryPort.countActiveByVenueIdAndDate(venueId, date);
+    }
 }

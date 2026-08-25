@@ -14,4 +14,5 @@ public interface ReservationRepositoryPort {
     List<Reservation> findActiveByVenueId(Long venueId);
     List<Reservation> findActiveByFieldIdAndDate(Long fieldId, LocalDate date);
     List<Reservation> findActiveByVenueIdAndDate(Long venueId, LocalDate date);
+    long countActiveByVenueIdAndDate(Long venueId, LocalDate date);
 }

@@ -18,4 +18,5 @@ public class VenueDTO {
     private String address;
     private LocalTime openingHour;
     private LocalTime closingHour;
+    private boolean hasFields;
 }
