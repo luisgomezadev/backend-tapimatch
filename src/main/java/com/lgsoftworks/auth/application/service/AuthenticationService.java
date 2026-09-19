@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
 
     private final UserRepositoryPort userRepositoryPort;
-    private final UserUseCase fieldAdminUseCase;
+    private final UserUseCase userUseCase;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -46,7 +46,7 @@ public class AuthenticationService {
 
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
-        return fieldAdminUseCase.save(userRequest);
+        return userUseCase.save(userRequest);
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
