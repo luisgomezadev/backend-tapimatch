@@ -1,6 +1,6 @@
-# 🎮 Play Match - Backend API
+# 🎮 TapiMatch - Backend API
 
-**Play Match** es el backend de una aplicación para gestión de reservas deportivas. Está construido con [Spring Boot](https://spring.io/projects/spring-boot) y utiliza autenticación segura con [JWT](https://jwt.io/). Proporciona endpoints RESTful para la gestión de usuarios, autenticación, reservas, canchas y más.
+**TapiMatch** es el backend de una aplicación para gestión de reservas deportivas. Está construido con [Spring Boot](https://spring.io/projects/spring-boot) y utiliza autenticación segura con [JWT](https://jwt.io/). Proporciona endpoints RESTful para la gestión de usuarios, autenticación, reservas, canchas y más.
 
 ---
 
