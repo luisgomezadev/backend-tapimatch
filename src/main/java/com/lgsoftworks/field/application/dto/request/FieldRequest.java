@@ -16,9 +16,6 @@ import java.math.BigDecimal;
 @Setter
 public class FieldRequest {
 
-    @NotNull(message = "El venue es requerido")
-    private Long venueId;
-
     @NotBlank(message = "El nombre de la cancha es requerido")
     @Size(min = 3, max = 50, message = "El nombre debe tener entre 3 y 50 caracteres")
     private String name;

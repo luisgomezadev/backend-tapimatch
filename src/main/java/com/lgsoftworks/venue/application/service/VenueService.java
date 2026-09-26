@@ -9,6 +9,7 @@ import com.lgsoftworks.venue.application.dto.request.VenueFilter;
 import com.lgsoftworks.venue.application.dto.request.VenueRequest;
 import com.lgsoftworks.venue.application.dto.response.VenueDTO;
 import com.lgsoftworks.venue.application.port.in.VenueUseCase;
+import com.lgsoftworks.venue.domain.exception.VenueByAdminIdNotFoundException;
 import com.lgsoftworks.venue.domain.exception.VenueByCodeNotFoundException;
 import com.lgsoftworks.venue.domain.exception.VenueByIdNotFoundException;
 import com.lgsoftworks.venue.domain.model.Venue;
@@ -94,10 +95,11 @@ public class VenueService implements VenueUseCase {
     }
 
     @Override
-    public Optional<VenueDTO> findByAdminId() {
+    public VenueDTO findByAdminId() {
         User currentUser = currentUserService.getCurrentUser();
         return venueRepositoryPort.findByAdminId(currentUser.getId())
-                .map(this::toDtoWithFields);
+                .map(this::toDtoWithFields)
+                .orElseThrow(() -> new VenueByAdminIdNotFoundException(currentUser.getId()));
     }
 
     @Override

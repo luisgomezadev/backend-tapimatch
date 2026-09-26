@@ -38,4 +38,9 @@ public class FieldJpaAdapter implements FieldRepositoryPort {
     public List<Field> findByVenueId(Long venueId) {
         return fieldRepository.findByVenueIdAndActiveTrue(venueId).stream().map(mapper::toModel).toList();
     }
+
+    @Override
+    public List<Field> findPublicByVenueId(Long venueId) {
+        return fieldRepository.findByVenueId(venueId).stream().map(mapper::toModel).toList();
+    }
 }

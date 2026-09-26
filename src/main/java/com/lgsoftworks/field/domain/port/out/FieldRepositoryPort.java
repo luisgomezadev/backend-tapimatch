@@ -10,4 +10,5 @@ public interface FieldRepositoryPort {
     Optional<Field> findById(Long id);
     List<Field> findAllByVenueId(Long venueId);
     List<Field> findByVenueId(Long venueId);
+    List<Field> findPublicByVenueId(Long venueId);
 }

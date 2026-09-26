@@ -1,5 +1,6 @@
 package com.lgsoftworks.reservation.application.service;
 
+import com.lgsoftworks.auth.domain.exception.AccessDeniedException;
 import com.lgsoftworks.field.application.dto.response.FieldDTO;
 import com.lgsoftworks.field.application.port.in.FieldUseCase;
 import com.lgsoftworks.reservation.application.dto.mapper.ReservationModelMapper;
@@ -37,20 +38,15 @@ public class ReservationService implements ReservationUseCase {
 
     @Override
     public Optional<ReservationDTO> findByCode(String code) {
-        Optional<ReservationDTO> optionalReservationDTO = reservationRepositoryPort.findByCode(code)
-                .map(reservationModelMapper::toDTO);
-
-        if (optionalReservationDTO.isPresent()) {
-            FieldDTO fieldDTO = fieldUseCase.findById(optionalReservationDTO.get().getFieldId());
-            VenueDTO venueDTO = venueUseCase.findById(fieldDTO.getVenueId());
-
-            optionalReservationDTO.get().setVenueName(venueDTO.getName());
-            optionalReservationDTO.get().setFieldName(fieldDTO.getName());
-
-            return optionalReservationDTO;
-        } else {
-            throw new ReservationByCodeNotFoundException(code);
-        }
+        return reservationRepositoryPort.findByCode(code)
+                .map(reservationModelMapper::toDTO)
+                .map(dto -> {
+                    FieldDTO fieldDTO = fieldUseCase.findById(dto.getFieldId());
+                    VenueDTO venueDTO = venueUseCase.findById(fieldDTO.getVenueId());
+                    dto.setVenueName(venueDTO.getName());
+                    dto.setFieldName(fieldDTO.getName());
+                    return dto;
+                });
 
     }
 
@@ -72,7 +68,7 @@ public class ReservationService implements ReservationUseCase {
     public List<ReservationDTO> findByVenueIdAndDate(Long venueId, LocalDate date) {
         List<Reservation> reservations = reservationRepositoryPort.findActiveByVenueIdAndDate(venueId, date);
 
-        Map<Long, FieldDTO> fieldsById = fieldUseCase.findByVenueId(venueId).stream()
+        Map<Long, FieldDTO> fieldsById = fieldUseCase.findByVenueId().stream()
                 .collect(Collectors.toMap(FieldDTO::getId, Function.identity()));
 
         return reservations.stream()
@@ -91,6 +87,14 @@ public class ReservationService implements ReservationUseCase {
     public ReservationDTO cancel(Long id) {
         Reservation reservation = reservationRepositoryPort.findById(id)
                 .orElseThrow(() -> new ReservationByIdNotFoundException(id));
+
+        FieldDTO fieldDTO = fieldUseCase.findById(reservation.getFieldId());
+        VenueDTO venueDTO = venueUseCase.findByAdminId();
+
+        if(!venueDTO.getId().equals(fieldDTO.getVenueId())) {
+            throw new AccessDeniedException("No tienes permiso para cancelar esta reserva");
+        }
+
         reservation.cancel();
         Reservation saved = reservationRepositoryPort.save(reservation);
         return reservationModelMapper.toDTO(saved);

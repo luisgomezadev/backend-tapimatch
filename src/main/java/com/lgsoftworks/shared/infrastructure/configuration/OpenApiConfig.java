@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "PlayMatch API",
+                title = "TapiMatch API",
                 version = "1.0.0",
                 description = "Documentación de la API para el sistema de reservas de canchas sintéticas.",
                 contact = @Contact(

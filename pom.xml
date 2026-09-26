@@ -13,9 +13,9 @@
 	</parent>
 
 	<groupId>com.lgsoftworks</groupId>
-	<artifactId>PlayMatch</artifactId>
+	<artifactId>TapiMatch</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>PlayMatch</name>
+	<name>TapiMatch</name>
 	<description>Proyecto para reserva de cancha sintética</description>
 
 	<properties>

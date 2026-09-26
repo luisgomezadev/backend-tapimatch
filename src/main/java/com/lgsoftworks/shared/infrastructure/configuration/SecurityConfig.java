@@ -57,7 +57,7 @@ public class SecurityConfig {
                                 "/actuator/**",
                                 "/uploads/**"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/field/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/field/p/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/venue/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/venue/code/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/reservation/code/**").permitAll()

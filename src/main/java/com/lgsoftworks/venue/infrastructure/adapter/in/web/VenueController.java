@@ -60,7 +60,7 @@ public class VenueController {
             @ApiResponse(responseCode = "404", description = "Complejo no encontrado")
     })
     @GetMapping("/mine")
-    public ResponseEntity<Optional<VenueDTO>> getMyVenue() {
+    public ResponseEntity<VenueDTO> getMyVenue() {
         return ResponseEntity.ok(venueUseCase.findByAdminId());
     }
 
