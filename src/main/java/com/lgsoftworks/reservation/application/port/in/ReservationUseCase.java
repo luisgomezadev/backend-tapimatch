@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface ReservationUseCase {
     Optional<ReservationDTO> findById(Long id);
-    Optional<ReservationDTO> findByCode(String code);
+    ReservationDTO findByCode(String code);
     List<ReservationDTO> findByFieldId(Long fieldId);
     List<ReservationDTO> findByVenueId(Long venueId);
     List<ReservationDTO> findByVenueIdAndDate(Long venueId, LocalDate date);

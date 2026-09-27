@@ -37,17 +37,16 @@ public class ReservationService implements ReservationUseCase {
     }
 
     @Override
-    public Optional<ReservationDTO> findByCode(String code) {
-        return reservationRepositoryPort.findByCode(code)
-                .map(reservationModelMapper::toDTO)
-                .map(dto -> {
-                    FieldDTO fieldDTO = fieldUseCase.findById(dto.getFieldId());
-                    VenueDTO venueDTO = venueUseCase.findById(fieldDTO.getVenueId());
-                    dto.setVenueName(venueDTO.getName());
-                    dto.setFieldName(fieldDTO.getName());
-                    return dto;
-                });
+    public ReservationDTO findByCode(String code) {
+        Reservation reservation = reservationRepositoryPort.findByCode(code)
+                .orElseThrow(() -> new ReservationByCodeNotFoundException(code));
 
+        ReservationDTO dto = reservationModelMapper.toDTO(reservation);
+        FieldDTO fieldDTO = fieldUseCase.findById(dto.getFieldId());
+        VenueDTO venueDTO = venueUseCase.findById(fieldDTO.getVenueId());
+        dto.setVenueName(venueDTO.getName());
+        dto.setFieldName(fieldDTO.getName());
+        return dto;
     }
 
     @Override

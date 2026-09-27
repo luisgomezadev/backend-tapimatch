@@ -66,9 +66,7 @@ public class ReservationController {
     )
     @GetMapping("/code/{code}")
     public ResponseEntity<ReservationDTO> getReservationByCode(@PathVariable String code) {
-        return reservationUseCase.findByCode(code)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ReservationByCodeNotFoundException(code));
+        return ResponseEntity.ok(reservationUseCase.findByCode(code));
     }
 
     @Operation(
