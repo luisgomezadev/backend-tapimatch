@@ -2,7 +2,6 @@ package com.lgsoftworks.field.domain.model;
 
 import com.lgsoftworks.field.domain.exception.InvalidFieldDataException;
 import com.lgsoftworks.venue.domain.model.VenueId;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

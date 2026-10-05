@@ -6,8 +6,6 @@ import com.lgsoftworks.venue.application.dto.request.VenueRequest;
 import com.lgsoftworks.venue.application.dto.response.VenueDTO;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Optional;
-
 public interface VenueUseCase {
     VenueDTO save(VenueRequest request);
     VenueDTO update(Long id, VenueRequest request);

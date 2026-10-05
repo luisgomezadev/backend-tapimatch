@@ -1,7 +1,6 @@
 package com.lgsoftworks.field.application.dto.response;
 
 import com.lgsoftworks.field.domain.model.FieldType;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

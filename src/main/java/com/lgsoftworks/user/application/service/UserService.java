@@ -1,6 +1,7 @@
 package com.lgsoftworks.user.application.service;
 
 import com.lgsoftworks.auth.application.service.CurrentUserService;
+import com.lgsoftworks.auth.domain.exception.AccessDeniedException;
 import com.lgsoftworks.user.application.dto.mapper.UserModelMapper;
 import com.lgsoftworks.user.application.dto.request.UserRequest;
 import com.lgsoftworks.user.application.dto.response.UserDTO;
@@ -12,7 +13,6 @@ import com.lgsoftworks.user.domain.port.out.ImageUploaderPort;
 import com.lgsoftworks.user.domain.port.out.UserRepositoryPort;
 import com.lgsoftworks.user.domain.service.UserUniquenessValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -61,10 +61,15 @@ public class UserService implements UserUseCase, UploadUserImageUseCase {
 
     @Override
     public UserDTO uploadUserImage(Long userId, MultipartFile imageFile) {
+        User currentUser = currentUserService.getCurrentUser();
         String imageUrl = imageUploader.uploadImage(imageFile);
 
         User user = userRepositoryPort.findById(userId)
                 .orElseThrow(() -> new UserByIdNotFoundException(userId));
+
+        if (!currentUser.getId().equals(user.getId())) {
+            throw new AccessDeniedException("No tiene permiso para actualizar la imagen de este usuario.");
+        }
 
         user.changeImageUrl(imageUrl);
         userRepositoryPort.save(user);

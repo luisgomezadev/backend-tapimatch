@@ -30,7 +30,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
-    @GetMapping("/me")
+    @GetMapping("/my-info")
     public ResponseEntity<Optional<UserDTO>> getCurrentUser() {
         return ResponseEntity.ok(userUseCase.findCurrentUser());
     }

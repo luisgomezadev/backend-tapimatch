@@ -5,6 +5,7 @@ import com.lgsoftworks.auth.application.dto.request.RefreshTokenRequest;
 import com.lgsoftworks.auth.application.dto.response.AuthenticationResponse;
 import com.lgsoftworks.auth.domain.exception.InvalidCredentialsException;
 import com.lgsoftworks.auth.domain.exception.PasswordNotNullException;
+import com.lgsoftworks.auth.domain.model.AuthenticatedUser;
 import com.lgsoftworks.auth.infrastructure.security.service.JwtService;
 import com.lgsoftworks.user.application.dto.mapper.UserModelMapper;
 import com.lgsoftworks.user.application.dto.request.UserRequest;
@@ -14,12 +15,11 @@ import com.lgsoftworks.user.domain.exception.UserByEmailNotFoundException;
 import com.lgsoftworks.user.domain.exception.UserWithEmailExistsException;
 import com.lgsoftworks.user.domain.model.User;
 import com.lgsoftworks.user.domain.port.out.UserRepositoryPort;
-import com.lgsoftworks.user.infrastructure.adapter.out.persistence.entity.UserEntity;
-import com.lgsoftworks.user.infrastructure.adapter.out.persistence.mapper.UserDboMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,27 +52,33 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
 
         try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()
-                    )
-            );
+
+            Authentication authentication =
+                    authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(
+                                    request.getEmail(),
+                                    request.getPassword()
+                            )
+                    );
+
+            AuthenticatedUser authenticatedUser =
+                    (AuthenticatedUser) authentication.getPrincipal();
+
+            User user = userRepositoryPort.findByEmail(request.getEmail())
+                    .orElseThrow(() ->
+                            new UserByEmailNotFoundException(request.getEmail())
+                    );
+
+            String jwtToken = jwtService.generateToken(authenticatedUser, user.getRole().name());
+
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .user(userModelMapper.toUserDTO(user))
+                    .build();
+
         } catch (BadCredentialsException ex) {
             throw new InvalidCredentialsException();
         }
-
-        User user = userRepositoryPort.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UserByEmailNotFoundException(request.getEmail()));
-
-        UserEntity userEntity = UserDboMapper.toDbo(user);
-
-        String jwtToken = jwtService.generateToken(userEntity, userEntity.getRole().name());
-
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .user(userModelMapper.toUserDTO(user))
-                .build();
     }
 
     public AuthenticationResponse refreshToken(RefreshTokenRequest request) {

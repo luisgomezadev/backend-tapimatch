@@ -1,7 +1,9 @@
 package com.lgsoftworks.auth.infrastructure.config;
 
+import com.lgsoftworks.auth.domain.model.AuthenticatedUser;
 import com.lgsoftworks.user.domain.exception.UserByEmailNotFoundException;
-import com.lgsoftworks.user.infrastructure.adapter.out.persistence.repository.UserRepository;
+import com.lgsoftworks.user.domain.model.User;
+import com.lgsoftworks.user.domain.port.out.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,22 +11,40 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
 public class AuthenticationConfig {
 
-    private final UserRepository userRepository;
+    private final UserRepositoryPort userRepositoryPort;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username)
-                .map(user -> (UserDetails) user)
-                .orElseThrow(() -> new UserByEmailNotFoundException(username));
+        return username -> {
+
+            User user = userRepositoryPort.findByEmail(username)
+                    .orElseThrow(() ->
+                            new UserByEmailNotFoundException(username)
+                    );
+
+            return new AuthenticatedUser(
+                    user.getId(),
+                    user.getEmail(),
+                    user.getPassword(),
+                    user.getRole(),
+                    List.of(
+                            new SimpleGrantedAuthority(
+                                    user.getRole().name()
+                            )
+                    )
+            );
+        };
     }
 
     @Bean

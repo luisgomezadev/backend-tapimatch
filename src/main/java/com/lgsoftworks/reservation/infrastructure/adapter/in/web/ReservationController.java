@@ -5,7 +5,6 @@ import com.lgsoftworks.reservation.application.dto.response.ReservationDTO;
 import com.lgsoftworks.reservation.application.dto.response.TimeSlot;
 import com.lgsoftworks.reservation.application.port.in.ReservationAvailabilityUseCase;
 import com.lgsoftworks.reservation.application.port.in.ReservationUseCase;
-import com.lgsoftworks.reservation.domain.exception.ReservationByCodeNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

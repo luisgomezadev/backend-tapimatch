@@ -1,6 +1,5 @@
 package com.lgsoftworks.field.application.service;
 
-import com.lgsoftworks.auth.application.service.CurrentUserService;
 import com.lgsoftworks.auth.domain.exception.AccessDeniedException;
 import com.lgsoftworks.field.application.dto.mapper.FieldModelMapper;
 import com.lgsoftworks.field.application.dto.request.FieldRequest;
@@ -10,17 +9,12 @@ import com.lgsoftworks.field.application.port.in.FieldUseCase;
 import com.lgsoftworks.field.domain.exception.FieldByIdNotFoundException;
 import com.lgsoftworks.field.domain.model.Field;
 import com.lgsoftworks.field.domain.port.out.FieldRepositoryPort;
-import com.lgsoftworks.user.domain.model.User;
 import com.lgsoftworks.venue.application.dto.response.VenueDTO;
 import com.lgsoftworks.venue.application.port.in.VenueUseCase;
-import com.lgsoftworks.venue.domain.exception.VenueByAdminIdNotFoundException;
-import com.lgsoftworks.venue.domain.model.Venue;
 import com.lgsoftworks.venue.domain.model.VenueId;
-import com.lgsoftworks.venue.domain.port.out.VenueRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service

@@ -1,6 +1,5 @@
 package com.lgsoftworks.venue.application.dto.response;
 
-import com.lgsoftworks.shared.domain.enums.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
