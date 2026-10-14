@@ -1,5 +1,6 @@
 package com.lgsoftworks.reservation.application.service;
 
+import com.lgsoftworks.auth.application.service.CurrentUserService;
 import com.lgsoftworks.auth.domain.exception.AccessDeniedException;
 import com.lgsoftworks.field.application.dto.response.FieldDTO;
 import com.lgsoftworks.field.application.port.in.FieldUseCase;
@@ -30,6 +31,7 @@ public class ReservationService implements ReservationUseCase {
     private final ReservationModelMapper reservationModelMapper;
     private final FieldUseCase fieldUseCase;
     private final VenueUseCase venueUseCase;
+    private final CurrentUserService currentUserService;
 
     @Override
     public Optional<ReservationDTO> findById(Long id) {
@@ -88,7 +90,7 @@ public class ReservationService implements ReservationUseCase {
                 .orElseThrow(() -> new ReservationByIdNotFoundException(id));
 
         FieldDTO fieldDTO = fieldUseCase.findById(reservation.getFieldId());
-        VenueDTO venueDTO = venueUseCase.findByAdminId();
+        VenueDTO venueDTO = getVenueForCurrentUser();
 
         if(!venueDTO.getId().equals(fieldDTO.getVenueId())) {
             throw new AccessDeniedException("No tienes permiso para cancelar esta reserva");
@@ -102,5 +104,10 @@ public class ReservationService implements ReservationUseCase {
     @Override
     public long countActiveByVenueIdAndDate(Long venueId, LocalDate date) {
         return reservationRepositoryPort.countActiveByVenueIdAndDate(venueId, date);
+    }
+
+    private VenueDTO getVenueForCurrentUser() {
+        return venueUseCase.findByAdminId()
+                .orElseThrow(() -> new AccessDeniedException("No tienes un complejo deportivo asociado"));
     }
 }

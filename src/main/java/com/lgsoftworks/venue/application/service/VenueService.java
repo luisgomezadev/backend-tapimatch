@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -94,11 +95,10 @@ public class VenueService implements VenueUseCase {
     }
 
     @Override
-    public VenueDTO findByAdminId() {
+    public Optional<VenueDTO> findByAdminId() {
         User currentUser = currentUserService.getCurrentUser();
         return venueRepositoryPort.findByAdminId(currentUser.getId())
-                .map(this::toDtoWithFields)
-                .orElseThrow(() -> new VenueByAdminIdNotFoundException(currentUser.getId()));
+                .map(this::toDtoWithFields);
     }
 
     @Override

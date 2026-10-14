@@ -1,5 +1,6 @@
 package com.lgsoftworks.field.application.service;
 
+import com.lgsoftworks.auth.application.service.CurrentUserService;
 import com.lgsoftworks.auth.domain.exception.AccessDeniedException;
 import com.lgsoftworks.field.application.dto.mapper.FieldModelMapper;
 import com.lgsoftworks.field.application.dto.request.FieldRequest;
@@ -24,11 +25,12 @@ public class FieldService implements FieldUseCase {
     private final FieldRepositoryPort fieldRepositoryPort;
     private final FieldModelMapper fieldModelMapper;
     private final VenueUseCase venueUseCase;
+    private final CurrentUserService currentUserService;
 
     @Override
     public FieldDTO save(FieldRequest request) {
 
-        VenueDTO venue = venueUseCase.findByAdminId();
+        VenueDTO venue = getVenueForCurrentUser();
 
         Field field = Field.create(
                 request.getName(),
@@ -50,7 +52,7 @@ public class FieldService implements FieldUseCase {
     @Override
     public List<FieldDTO> findByVenueId() {
 
-        VenueDTO venue = venueUseCase.findByAdminId();
+        VenueDTO venue = getVenueForCurrentUser();
 
         return fieldRepositoryPort.findByVenueId(venue.getId()).stream()
                 .map(fieldModelMapper::toDTO)
@@ -60,7 +62,7 @@ public class FieldService implements FieldUseCase {
     @Override
     public List<FieldDTO> findAllByVenueId() {
 
-        VenueDTO venue = venueUseCase.findByAdminId();
+        VenueDTO venue = getVenueForCurrentUser();
 
         return fieldRepositoryPort.findAllByVenueId(venue.getId()).stream()
                 .map(fieldModelMapper::toDTO)
@@ -80,7 +82,7 @@ public class FieldService implements FieldUseCase {
         Field field = fieldRepositoryPort.findById(fieldId)
                 .orElseThrow(() -> new FieldByIdNotFoundException(fieldId));
 
-        VenueDTO venue = venueUseCase.findByAdminId();
+        VenueDTO venue = getVenueForCurrentUser();
 
         if (!field.getVenueId().value().equals(venue.getId())) {
             throw new AccessDeniedException("No tienes permiso para modificar esta cancha");
@@ -100,7 +102,7 @@ public class FieldService implements FieldUseCase {
         Field field = fieldRepositoryPort.findById(fieldId)
                 .orElseThrow(() -> new FieldByIdNotFoundException(fieldId));
 
-        VenueDTO venue = venueUseCase.findByAdminId();
+        VenueDTO venue = getVenueForCurrentUser();
 
         if (!field.getVenueId().value().equals(venue.getId())) {
             throw new AccessDeniedException("No tienes permiso para desactivar esta cancha");
@@ -115,7 +117,7 @@ public class FieldService implements FieldUseCase {
         Field field = fieldRepositoryPort.findById(fieldId)
                 .orElseThrow(() -> new FieldByIdNotFoundException(fieldId));
 
-        VenueDTO venue = venueUseCase.findByAdminId();
+        VenueDTO venue = getVenueForCurrentUser();
 
         if (!field.getVenueId().value().equals(venue.getId())) {
             throw new AccessDeniedException("No tienes permiso para activar esta cancha");
@@ -123,6 +125,11 @@ public class FieldService implements FieldUseCase {
 
         field.activate();
         fieldRepositoryPort.save(field);
+    }
+
+    private VenueDTO getVenueForCurrentUser() {
+        return venueUseCase.findByAdminId()
+                .orElseThrow(() -> new AccessDeniedException("No tienes un complejo deportivo asociado"));
     }
 
 }

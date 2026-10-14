@@ -55,11 +55,13 @@ public class VenueController {
     @Operation(summary = "Obtener un complejo por ID del admin")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Complejo encontrado"),
-            @ApiResponse(responseCode = "404", description = "Complejo no encontrado")
+            @ApiResponse(responseCode = "204", description = "Complejo no encontrado")
     })
-    @GetMapping("/mine")
-    public ResponseEntity<VenueDTO> getMyVenue() {
-        return ResponseEntity.ok(venueUseCase.findByAdminId());
+    @GetMapping("/me")
+    public ResponseEntity<VenueDTO> findMyVenue() {
+        return venueUseCase.findByAdminId()
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @Operation(summary = "Obtener un complejo por su código (url)")
@@ -81,6 +83,7 @@ public class VenueController {
     @Operation(summary = "Actualizar un complejo deportivo existente")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Complejo actualizado"),
+            @ApiResponse(responseCode = "403", description = "No tienes permiso para modificar este complejo"),
             @ApiResponse(responseCode = "404", description = "Complejo no encontrado")
     })
     @PutMapping("/{id}")
